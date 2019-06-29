@@ -11,10 +11,21 @@ const datastore = new Datastore({
 app.get('/getCustomers', function (request, response) {
     let query = datastore.createQuery(kind);
     query.run(function (error, custData) {
-        return response
-            .status(200)
-            .send(custData);
-    });
+        if (error) {
+            var err = new Error("Error object is created !")
+            next(err);
+        }
+        if (custData.length == 0) {
+            return response
+                .status(200)
+                .json({ error: 'No data available !' })
+        }
+        else {
+            return response
+                .status(200)
+                .send(custData);
+        }
+    })
 });
 
 function isInteger(id) {
@@ -32,6 +43,10 @@ app.get('/getCustomer/:customer_id', function (request, response) {
         let query = datastore.createQuery(kind)
         query.run(function (error, data) {
             var item = data.find(item => item.customer_ID === customerId);
+            if (error) {
+                var err = new Error("Error object is created !")
+                next(err);
+            }
             if (!item) {
                 return response
                     .status(200)
@@ -50,6 +65,11 @@ app.get('/', function (request, response) {
     return response
         .status(200)
         .send('Change the API endpoints to "/getCustomers" for fetching customer list and "/getCustomer/id" for fetching customer specific details!');
+});
+
+app.use(function (err, request, response, next) {
+    response.status(500)
+    response.json({ error: 'Error Occured !' })
 });
 
 const PORT = process.env.PORT || 8080;
