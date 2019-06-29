@@ -7,7 +7,6 @@ const datastore = new Datastore({
     projectId: 'newsampleproject-245021',
     keyFilename: 'newSampleProject.json'
 });
-
 app.get('/getCustomers', function (request, response) {
     let query = datastore.createQuery(kind);
     query.run(function (error, custData) {
@@ -28,7 +27,7 @@ app.get('/getCustomers', function (request, response) {
     })
 });
 
-function isInteger(id) {
+function isInteger(id) { 
     return id % 1 === 0;
 }
 
